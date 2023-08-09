@@ -24,3 +24,28 @@ def taskList(request):
     tasks = Task.objects.all().order_by('-created')
     serializer = TaskSerializer(tasks, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def taskDetail(request, pk):
+    task = Task.objects.get(id=pk)
+    serializer = TaskSerializer(task, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def taskCreate(request):
+    # request.data returns a JSON object
+    serializer = TaskSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def taskUpdate(request,pk):
+    task = Task.objects.get(id=pk)
+    # request.data returns a JSON object
+    serializer = TaskSerializer(instance=task,data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
